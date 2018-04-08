@@ -2,22 +2,33 @@
 #include <Windows.h>
 #include <chrono>
 #include <vector>
+#include <string>
 
+#include "point.h"
 using namespace std;
 
 int screenWidth = 120; //Console Screen Size. X = Cols & Y = Rows
 int screenHeight = 40;
 
-int mapWidth = 144;	//World Dimensions
-int mapHeight = 96;
+Point maxVel(5, 5);
+Point player(5, 5);
+Point pVel(0, 0);
+Point pDir(1, 0);
+Point camera(0, 0);
+Point mouse(0, 0);
 
-int playerX = 5;
-int playerY = 5;
-int playerVX = 0;
-int playerVY = 0;
+//float fov = 3.14159 / 4;
 
-int cameraX = 0;
-int cameraY = 0;
+int maxDistance = 5;
+
+
+char character = '@';
+int speed = 10;
+
+
+
+#include "Map.h"
+#include "math.h"
 
 int main()
 {
@@ -26,118 +37,29 @@ int main()
 	SetConsoleActiveScreenBuffer(consoleHandle);
 	DWORD bytesWritten = 0;
 
-	// 16 x 3
+	//Map creation
+	LevelMap level(144, 96);
 
-	// 48 x 3 for width
+	std::wstring map = level.levelmap();
+	std::wstring visibleMap = level.levelmap();
+	
 
-
-	std::wstring map;          //^
-	map += L"################################################################################################################################################";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              .";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                         x                                                                    #";
-	map += L"#                                                                       xxx                                                                    #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              .";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"#                                                                                                                                              #";
-	map += L"################################################################################################################################################";
-
-	map[playerX + mapWidth * playerY] = '@';
-	const int TICKS_PER_SECOND = 10;
+	//map[player.x + level.mapWidth * player.y] = character;
+	const int TICKS_PER_SECOND = 25;
 	const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
 	const int MAX_FRAMESKIP = 10;
+
+	int ANIMATION_DELAY = 1000 / 4;
+	int animateDelay = 0;
+
 
 	DWORD next_game_tick = GetTickCount();
 	int loops;
 	bool game_is_running = true;
-
+	Direction direction;
+	int count = 0;
+	CONSOLE_SCREEN_BUFFER_INFO buffinfo;
+	GetConsoleScreenBufferInfo(consoleHandle, &buffinfo);
 	while (game_is_running)
 	{
 		loops = 0;
@@ -145,99 +67,79 @@ int main()
 		while (GetTickCount() > next_game_tick && loops < MAX_FRAMESKIP)
 		{
 			// Update
-			for (int i = 0; i < screenWidth * screenHeight; i++)
+			clearScreen(screen);
+
+			//Movement Logic
+			clampPlayerToMap(map, level);
+			movementLogic(map, level);
+			Point ray(player.x, player.y);
+		
+			/*for (int distance = 0; distance < maxDistance; distance++)
 			{
-				screen[i] = ' ';
-			}
+				setPlayerDirection(direction); // N, S, E, W, NE, NW, SE, SW
 
-			
+				// Update direction distance/step
+				ray.x = pDir.x * distance + ray.x;
+				ray.y = pDir.y * distance + ray.y;
 
-			if (GetAsyncKeyState((unsigned short)'A'))
-			{
-				if (map[(playerX - 1) + mapWidth * playerY] == '#')
+				// Check for a collision
+				if (map[ray.x + level.mapWidth * ray.y] == '#') // TODO Create enum for Collision blocks
 				{
-					playerVX ++;
-				}
-				else
-				{
-					playerVX--;
-				}
-				
-			}
-
-
-			if (GetAsyncKeyState((unsigned short)'D'))
-			{
-				if (map[(playerX + 1) + mapWidth * playerY] == '#')
-				{
-					playerVX --;
-				}
-				else
-				{
-					playerVX++;
-				}
-				
-			}
-
-			if (GetAsyncKeyState((unsigned short)'S'))
-			{
-				if (map[playerX + mapWidth * (playerY + 1)] == '#')
-				{
-					//playerVY = 0;
-				}
-				else
-				{
-					playerVY++;
-				}
-				
-			}
-
-			if (GetAsyncKeyState((unsigned short)'W'))
-			{
-				if (map[playerX + mapWidth * (playerY - 1)] == '#')
-				{
-					//playerVY = 0;
-				}
-				else
-				{
-					playerVY--;
-				}
-				
-			}
-
-			if (GetAsyncKeyState((unsigned short)'C'))
-			{
-				for (int x = 0; x < mapWidth - 1; x++)
-				{
-					for (int y = 0; y < mapHeight - 1; y++)
+					if (NORTH || SOUTH)
 					{
-						map[x + mapWidth * y] = ' ';
+						pDir.y = -pDir.y;
+					}
+					else
+					{
+						pDir.x = -pDir.x;
+					}
+
+					switch (direction)
+					{
+					case NORTH:
+						pDir.y = -pDir.y;
+						break;
+					case SOUTH:
+						pDir.y = -pDir.y;
+						break;
+					case EAST:
+						pDir.x = -pDir.x;
+						break;
+					case WEST:
+						pDir.x = -pDir.x;
+						break;
+					case NORTHEAST:
+						pDir.x = -pDir.x;
+						break;
+					case NORTHWEST:
+						pDir.x = -pDir.x;
+						break;
+					case SOUTHEAST:
+						pDir.x = -pDir.x;
+						break;
+					case SOUTHWEST:
+						pDir.x = -pDir.x;
+						break;
 					}
 				}
-			}
-			//int tempX = playerVX + playerX;           // This is where i gimmicked the replacement of stuff
-			//int tempY = playerVY + playerY;
-			//int oldX = playerX;
-			//int oldY = playerY;
-			//wchar_t item = map[tempX + mapWidth * tempY];
-			playerX = playerVX + playerX;
-			playerY = playerVY + playerY;
-			if (playerX < 2) playerX = 2;
-			if (playerX >= mapWidth) playerX = mapWidth - 2;
-			if (playerY < 0) playerY = 1;
-			if (playerY >= mapHeight) playerY = mapHeight - 2;
-			map[playerX + mapWidth * playerY] = '@';
+
+			}*/
+
+			//collision(map, level);
+
+			
+			
+			setPlayerDirection(direction);
+			updatePlayerPosition();
 
 
-			//map[oldX + mapWidth * oldY] = item;
-			cameraX = playerX - screenWidth / 2;
-			cameraY = playerY - screenHeight / 2;
+			// Center the Camera on the player
+			centerCameraToPlayer();
+
 			// Clamp the camera to the boundaries of the map
-			if (cameraX < 0) cameraX = 0;
-			if (cameraX >= mapWidth - screenWidth) cameraX = mapWidth - screenWidth;
-			if (cameraY < 0) cameraY = 0;
-			if (cameraY >= mapHeight - screenHeight) cameraY = mapHeight - screenHeight;
+			clampCamera(level);
 
+			
 			
 
 			next_game_tick += SKIP_TICKS;
@@ -245,16 +147,34 @@ int main()
 		}
 		
 		
+		count++;
+		//if (count > 1000)
+		//	count = 0;
+
+		animateDelay += 1;
+		if (animateDelay > ANIMATION_DELAY)
+		{
+			animateDelay = 0;
+			animation(map, level, count);
+		}
+		
+		
+		
+		
+		
 		// Draw the map to the buffer. Offset the draw based on the camera coordinates
 		for (int x = 0; x < screenWidth; x++)
 		{
 			for (int y = 0; y < screenHeight; y++)
 			{
-				//screen[playerX + screenWidth * playerY] = '@';
-				screen[x + screenWidth * y] = map[(x + cameraX) + mapWidth * (y + cameraY)];
+				screen[x + screenWidth * y] = map[(x + camera.x) + level.mapWidth * (y + camera.y)];
+				
+				
 			}
 		}
-
+		screen[(player.x - camera.x) + screenWidth * (player.y - camera.y)] = character;
+		screen[(player.x - camera.x + pDir.x) + screenWidth * (player.y - camera.y + pDir.y)] = '.';
+		swprintf_s(screen, 40, L"VX = %03.i, VY = %03.i, X = %03.i, Y = %03.i", pDir.x, pDir.y, player.x, player.y);
 		// Display the Buffer
 		screen[screenWidth * screenHeight - 1] = '\0';
 		WriteConsoleOutputCharacter(consoleHandle, screen, screenWidth * screenHeight, { 0,0 }, &bytesWritten);
