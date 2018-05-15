@@ -37,7 +37,7 @@ void clearScreen(wchar_t * &screen)
 {
 	for (int i = 0; i < screenWidth * screenHeight; i++)
 	{
-		screen[i] = ' ';
+		screen[i] = L' ';
 	}
 }
 
@@ -236,3 +236,16 @@ void animation(std::wstring &map, LevelMap &level, int count)
 	}
 }
 
+int getTextCount(wstring text)
+{
+	int count = 0;
+
+	for (int i = 0; text[i] != '\0'; i++)
+	{
+		count += 1;
+	}
+
+	return count;
+}
+
+//void printText(wstring text, std::wstring &map, LevelMap &level)
